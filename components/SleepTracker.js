@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import UserSleepCard from './UserSleepCard';
 import AddSleepRecord from './AddSleepRecord';
@@ -7,7 +8,7 @@ export default function SleepTracker() {
     { id: 1, name: 'Harish', records: [] },
     { id: 2, name: 'Govardhan', records: [] }
   ]);
-  
+
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function SleepTracker() {
       setUsers(JSON.parse(savedData));
     }
   }, []);
-  
+
   useEffect(() => {
     localStorage.setItem('sleepData', JSON.stringify(users));
   }, [users]);
@@ -48,6 +49,15 @@ export default function SleepTracker() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      <motion.div
+        className="flex justify-between items-center mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Sleep & Wake Tracker</h2>
+      </motion.div>
+
       {selectedUser ? (
         <AddSleepRecord 
           user={users.find(u => u.id === selectedUser)} 
@@ -55,16 +65,27 @@ export default function SleepTracker() {
           onCancel={() => setSelectedUser(null)}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        >
           {users.map(user => (
-            <UserSleepCard 
+            <motion.div
               key={user.id}
-              user={user}
-              onAddClick={() => setSelectedUser(user.id)}
-              onDeleteRecord={(recordId) => deleteSleepRecord(user.id, recordId)}
-            />
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 100 }}
+            >
+              <UserSleepCard 
+                user={user}
+                onAddClick={() => setSelectedUser(user.id)}
+                onDeleteRecord={(recordId) => deleteSleepRecord(user.id, recordId)}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
